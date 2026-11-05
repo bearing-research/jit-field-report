@@ -1,18 +1,86 @@
-# Pre-committed pandas asv benchmark selection.
-# One asv benchmark name per line. Fill during the week 1 pilot; freeze before final runs.
-# Coverage targets: indexing, groupby, reshape, I/O, string and object dtype, arithmetic.
+# Pre-committed pandas asv benchmark selection (DRAFT, not frozen).
+# Drafted against pandas main 249a3e4845e574629d8f8aa6f1461fb47b02b02d (2026-11-04).
+# Re-check every name against the pinned commit in pins.toml before freezing.
+#
+# Format:  asv.benchmark.name    # prior | reason
+# prior = expected share of time in Python-level pandas code, written BEFORE any run:
+#   py      mostly Python control flow, small data or Python callables
+#   mixed   real Python layer plus native kernels
+#   native  dominated by Cython, NumPy or Arrow kernels (controls; expect ~no JIT effect)
+# The priors are a pre-registered hypothesis for RQ2, not a measurement.
+#
+# 53 entries, about 131 parameter combinations (asv runs every combination).
 
-# indexing
+# --- indexing: scalar and single-row access, method dispatch -----------------
+indexing.MethodLookup.time_lookup_loc                                  # py | .loc accessor creation only; pure overhead
+indexing.MethodLookup.time_lookup_iloc                                 # py | .iloc accessor creation only
+indexing.DataFrameStringIndexing.time_loc                              # py | scalar .loc on a string index
+indexing.DataFrameStringIndexing.time_at                               # py | scalar .at, the fast path
+indexing.DataFrameStringIndexing.time_getitem_scalar                   # py | chained scalar getitem
+indexing.IndexSingleRow.time_iloc_row                                  # py | one-row iloc, unique and non-unique index
+indexing.IndexSingleRow.time_loc_row                                   # py | one-row loc
+indexing.GetItemSingleColumn.time_frame_getitem_single_column_label    # py | column getitem
+indexing.NumericSeriesIndexing.time_getitem_scalar                     # py | scalar Series getitem across index types
+indexing.InsertColumns.time_insert                                     # mixed | repeated insert, block manager work
+indexing.InsertColumns.time_assign_with_setitem                        # mixed | repeated setitem
 
-# groupby
+# --- attributes and construction ---------------------------------------------
+attrs_caching.DataFrameAttributes.time_get_index                       # py | attribute access
+attrs_caching.DataFrameAttributes.time_set_index                       # py | attribute set with validation
+frame_ctor.FromDicts.time_list_of_dict                                 # py | constructor from Python records
+frame_ctor.FromDicts.time_nested_dict                                  # py | nested dict constructor
+frame_ctor.FromRecords.time_frame_from_records_generator               # py | generator consumption
 
-# reshape
+# --- row iteration and Python callables --------------------------------------
+frame_methods.Iteration.time_itertuples                                # py | Python-level row loop
+frame_methods.Iteration.time_items                                     # py | column iteration
+frame_methods.Apply.time_apply_user_func                               # py | apply with a Python function
+frame_methods.Apply.time_apply_axis_1                                  # py | row-wise apply, the classic slow path
+frame_methods.Apply.time_apply_lambda_mean                             # mixed | lambda calling a reduction
+frame_methods.Apply.time_apply_str_mean                                # native | string alias dispatches to a kernel; pair with lambda_mean
+frame_methods.Dtypes.time_frame_dtypes                                 # py | metadata
+series_methods.Map.time_map                                            # mixed | dict, Series and lambda mappers; lambda is py
+series_methods.Iter.time_iter                                          # py | Series iteration across dtypes
 
-# io
+# --- groupby: Python UDFs against Cython paths (paired contrasts) ------------
+groupby.Apply.time_scalar_function_single_col                          # py | groupby.apply with a scalar UDF
+groupby.Apply.time_copy_overhead_single_col                            # py | apply overhead
+groupby.ApplyDictReturn.time_groupby_apply_dict_return                 # py | UDF returning dicts
+groupby.MultiColumn.time_lambda_sum                                    # py | lambda agg; pair with time_cython_sum
+groupby.MultiColumn.time_cython_sum                                    # native | Cython agg; control for time_lambda_sum
+groupby.Transform.time_transform_lambda_max                            # py | lambda transform; pair with time_transform_str_max
+groupby.Transform.time_transform_str_max                               # native | string alias; control
+groupby.AggFunctions.time_different_str_functions                      # mixed | dict-of-aggs dispatch
+groupby.GroupManyLabels.time_sum                                       # native | many labels, Cython sum
 
-# strings and object dtype
+# --- size gradients: same operation, growing data ----------------------------
+series_methods.Clip.time_clip                                          # py to native | N = 50, 1000, 1e5; overhead share falls with N
+series_methods.ValueCounts.time_value_counts                           # mixed to native | N = 1e3, 1e4, 1e5 across dtypes
+series_methods.All.time_all                                            # py to native | N = 1e3, 1e6
 
-# arithmetic
+# --- reshape and joins --------------------------------------------------------
+join_merge.Concat.time_concat_small_frames                             # py | many small frames; overhead per frame
+join_merge.Merge.time_merge_2intkey                                    # native | hash join kernel
+reshape.PivotTable.time_pivot_table                                    # mixed | groupby plus reshape plumbing
+reshape.PivotTable.time_pivot_table_agg                                # mixed
+reshape.SimpleReshape.time_stack                                       # native
+reshape.SimpleReshape.time_unstack                                     # native
+reshape.Explode.time_explode                                           # mixed | object lists, sizes 100 to 1e4
+
+# --- strings and object dtype -------------------------------------------------
+strings.Methods.time_lower                                             # mixed | str, string[python], string[pyarrow]; python storage loops in Python
+strings.Methods.time_replace                                           # mixed
+strings.Iter.time_iter                                                 # py | iteration over string arrays
+inference.ToNumeric.time_from_str                                      # mixed | object to numeric inference
+
+# --- arithmetic and missing data (controls) ----------------------------------
+arithmetic.Ops.time_frame_add                                          # native | numexpr on and off
+frame_methods.Isnull.time_isnull                                       # native
+frame_methods.SortValues.time_frame_sort_values                        # native
+
+# --- I/O ------------------------------------------------------------------------
+io.csv.ReadCSVEngine.time_read_stringcsv                               # py to native | engine = c, python, pyarrow; the python engine is pure Python
+io.csv.ToCSV.time_frame                                                # mixed | wide, long, mixed frames
 
 # CHANGES
 # (date, benchmark, added or removed, reason)

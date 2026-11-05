@@ -1,11 +1,16 @@
-# Decision thresholds for paired on/off ratios (JIT-on time / JIT-off time).
-# Fill and commit before any final run. Do not change afterwards without a CHANGES entry.
+# Decision thresholds for paired JIT-on / JIT-off time ratios.
+# PROPOSED values, not yet frozen. Confirm, then commit before any final run.
+# After freezing, changes need a CHANGES entry.
 
-improved_below = "TBD"      # e.g. upper CI bound below this ratio
-regressed_above = "TBD"     # e.g. lower CI bound above this ratio
-inconclusive = "CI spans both thresholds, or cannot separate a 2% effect from zero"
-confidence_level = "TBD"
-min_independent_runs = "TBD"  # set from pilot noise
+status = "proposed"
+
+# Ratio = time with JIT on / time with JIT off. Below 1 means the JIT is faster.
+improved_below = 0.98       # improved if the whole CI is below this
+regressed_above = 1.02      # regressed if the whole CI is above this
+# no_effect: the whole CI lies within [improved_below, regressed_above]
+# inconclusive: anything else, e.g. a CI that cannot separate a 2% effect from 1.0
+confidence_level = 0.95
+min_independent_runs = 5    # fewer paired runs than this -> "insufficient"; revisit after the pilot
 
 # CHANGES
 # (date, field, old -> new, reason)

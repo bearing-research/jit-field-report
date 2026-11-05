@@ -1,2 +1,21 @@
-# One table per dataset: source URL, license, file name, sha256, rows.
-# Data files are downloaded by the pipelines' setup step and never committed.
+# Pipeline inputs. Data files are downloaded by scripts/fetch_data.py and never committed.
+# Source: NYC Taxi and Limousine Commission, TLC Trip Record Data
+# https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+# The TLC page states no explicit license; the data is also published on NYC Open Data.
+# The TLC notes the parquet schema may change, so the checksum pins the exact file.
+
+[files.trips]
+file = "yellow_tripdata_2024-01.parquet"
+url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet"
+sha256 = "c4d59da7bbc8abaeeeb1727947ee93d9891a71acb42854bd80db1571b2030510"
+rows = 2964624
+columns = 19
+retrieved = "2026-11-04"
+
+[files.zones]
+file = "taxi_zone_lookup.csv"
+url = "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+sha256 = "1a99e105092230f8620f301edcca7f80d3080642ff404d28ed957d3fa222c8ed"
+rows = 265
+columns = 4
+retrieved = "2026-11-04"
