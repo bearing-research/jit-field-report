@@ -9,7 +9,8 @@
 #   native  dominated by Cython, NumPy or Arrow kernels (controls; expect ~no JIT effect)
 # The priors are a pre-registered hypothesis for RQ2, not a measurement.
 #
-# 53 entries, about 131 parameter combinations (asv runs every combination).
+# 55 entries, 183 parameter combinations (asv runs every combination).
+# Where a benchmark's parameters likely differ, the prior is given per parameter value.
 
 # --- indexing: scalar and single-row access, method dispatch -----------------
 indexing.MethodLookup.time_lookup_loc                                  # py | .loc accessor creation only; pure overhead
@@ -27,7 +28,7 @@ indexing.InsertColumns.time_assign_with_setitem                        # mixed |
 # --- attributes and construction ---------------------------------------------
 attrs_caching.DataFrameAttributes.time_get_index                       # py | attribute access
 attrs_caching.DataFrameAttributes.time_set_index                       # py | attribute set with validation
-frame_ctor.FromDicts.time_list_of_dict                                 # py | constructor from Python records
+frame_ctor.FromDicts.time_list_of_dict                                 # mixed | Python records, but the list-of-dicts path runs Cython dicts_to_array
 frame_ctor.FromDicts.time_nested_dict                                  # py | nested dict constructor
 frame_ctor.FromRecords.time_frame_from_records_generator               # py | generator consumption
 
@@ -68,13 +69,17 @@ reshape.SimpleReshape.time_unstack                                     # native
 reshape.Explode.time_explode                                           # mixed | object lists, sizes 100 to 1e4
 
 # --- strings and object dtype -------------------------------------------------
-strings.Methods.time_lower                                             # mixed | str, string[python], string[pyarrow]; python storage loops in Python
-strings.Methods.time_replace                                           # mixed
+strings.Methods.time_lower                                             # per dtype: string[python] py; str and string[pyarrow] native (Arrow compute in pandas 3)
+strings.Methods.time_replace                                           # per dtype: string[python] py; str and string[pyarrow] native
 strings.Iter.time_iter                                                 # py | iteration over string arrays
-inference.ToNumeric.time_from_str                                      # mixed | object to numeric inference
+inference.ToNumeric.time_from_str                                      # native | mostly Cython maybe_convert_numeric
+
+# --- window functions with Python callables ----------------------------------
+rolling.Apply.time_rolling                                             # py | Python callable per window on 1,000 rows; raw=True vs raw=False is a built-in contrast
 
 # --- arithmetic and missing data (controls) ----------------------------------
-arithmetic.Ops.time_frame_add                                          # native | numexpr on and off
+arithmetic.Ops.time_frame_add                                          # native | numexpr on and off (needs numexpr, pinned)
+eval.Eval.time_add                                                     # per engine: python mixed; numexpr native (needs numexpr, pinned)
 frame_methods.Isnull.time_isnull                                       # native
 frame_methods.SortValues.time_frame_sort_values                        # native
 
@@ -84,3 +89,4 @@ io.csv.ToCSV.time_frame                                                # mixed |
 
 # CHANGES
 # (date, benchmark, added or removed, reason)
+# Changes before freezing are draft revisions and need no entry; first entry starts at the freeze.

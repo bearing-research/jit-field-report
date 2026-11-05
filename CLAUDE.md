@@ -14,7 +14,7 @@ Instructions for a coding agent working in this repo. Read `README.md` first.
 ## Week 1 pilot tasks (x86_64, c7i.metal-24xl)
 
 - [ ] Build CPython with `scripts/build_cpython.sh`; record the commit in `pins.toml`. Also build the pystats variant (`VARIANT=pystats`).
-- [ ] Pick the pandas main commit with Fangchen; build and install it into the JIT build with NumPy 2.5.4 and pyarrow 26.0.0 wheels; record the SHA.
+- [ ] Pick the pandas main commit with Fangchen; build and install it into the JIT build with NumPy 2.5.4 and pyarrow 26.0.0 wheels and numexpr 2.14.2 built from sdist; record the SHA. Confirm `pandas.core.computation.expressions.USE_NUMEXPR` is True.
 - [ ] Run `scripts/check_jit.py` with `PYTHON_JIT=0` and `1`; confirm `jit_enabled` flips.
 - [ ] Wire pandas asv to the build with an `existing:` environment. Confirm `PYTHON_JIT` reaches benchmark subprocesses by logging `check_jit.jit_state()` from inside one benchmark. If it does not, fall back to two builds from the same commit (`=yes` and `=no`).
 - [ ] Re-check every name in `benchmarks/selected.txt` against the pinned pandas commit.

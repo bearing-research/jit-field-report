@@ -20,6 +20,9 @@ reference_release = "3.1.1"         # used to check whether a pandas-side findin
 numpy = "2.5.4"
 pyarrow = "26.0.0"                  # full cp315 manylinux wheel set verified Nov 4, 2026
 
+[sdists]
+numexpr = "2.14.2"                  # no cp315 wheel as of Nov 4, 2026; builds from sdist on 3.15 (checked on uv's 3.15.0)
+
 [tools]
 pyperformance = "TBD"
 asv = "TBD"
