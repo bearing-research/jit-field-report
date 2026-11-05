@@ -1,8 +1,9 @@
 # Decision thresholds for paired JIT-on / JIT-off time ratios.
-# PROPOSED values, not yet frozen. Confirm, then commit before any final run.
-# After freezing, changes need a CHANGES entry.
+# The band and confidence level were approved by Fangchen and frozen on 2026-11-04,
+# before any run. min_independent_runs is set from the pilot's measured noise and
+# frozen before the first final run. After freezing, changes need a CHANGES entry.
 
-status = "proposed"
+status = "band and confidence frozen 2026-11-04; min_independent_runs pending pilot"
 
 # Ratio = time with JIT on / time with JIT off. Below 1 means the JIT is faster.
 improved_below = 0.98       # improved if the whole CI is below this
