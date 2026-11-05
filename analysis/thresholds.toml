@@ -1,0 +1,11 @@
+# Decision thresholds for paired on/off ratios (JIT-on time / JIT-off time).
+# Fill and commit before any final run. Do not change afterwards without a CHANGES entry.
+
+improved_below = "TBD"      # e.g. upper CI bound below this ratio
+regressed_above = "TBD"     # e.g. lower CI bound above this ratio
+inconclusive = "CI spans both thresholds, or cannot separate a 2% effect from zero"
+confidence_level = "TBD"
+min_independent_runs = "TBD"  # set from pilot noise
+
+# CHANGES
+# (date, field, old -> new, reason)

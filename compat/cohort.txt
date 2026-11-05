@@ -1,0 +1,3 @@
+# Compatibility cohort. Snapshot date and source in pins.toml [cohort].
+# Format: rank  package  status  reason-if-excluded
+0  pandas  included  # own test suite at the pinned main commit

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.asv/
+data/*
+!data/MANIFEST.toml
+perf.data*
+*.jit.data
+jitted-*.so
+/tmp/

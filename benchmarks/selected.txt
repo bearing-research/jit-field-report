@@ -1,0 +1,18 @@
+# Pre-committed pandas asv benchmark selection.
+# One asv benchmark name per line. Fill during the week 1 pilot; freeze before final runs.
+# Coverage targets: indexing, groupby, reshape, I/O, string and object dtype, arithmetic.
+
+# indexing
+
+# groupby
+
+# reshape
+
+# io
+
+# strings and object dtype
+
+# arithmetic
+
+# CHANGES
+# (date, benchmark, added or removed, reason)

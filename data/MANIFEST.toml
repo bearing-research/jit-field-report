@@ -1,0 +1,2 @@
+# One table per dataset: source URL, license, file name, sha256, rows.
+# Data files are downloaded by the pipelines' setup step and never committed.

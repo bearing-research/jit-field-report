@@ -1,0 +1,40 @@
+# Every pinned version and commit for the study.
+# Fill each "TBD" during the week 1 pilot, then do not change it without a note in CHANGES below.
+
+[cpython]
+tag = "v3.15.2"
+commit = "TBD"                      # git rev-parse HEAD after checkout
+configure = ["--enable-experimental-jit=yes-off", "--enable-optimizations", "--with-lto"]
+llvm = "21"                         # Tools/jit/README.md on the 3.15 branch
+
+[cpython_pystats]                   # diagnostic build: JIT activity only, never timed
+tag = "v3.15.2"
+configure = ["--enable-experimental-jit=yes-off", "--enable-pystats"]
+
+[pandas]
+branch = "main"
+commit = "TBD"                      # one SHA for the whole study; asv benchmarks and tests come from it
+reference_release = "3.1.1"         # used to check whether a pandas-side finding is specific to main
+
+[wheels]
+numpy = "2.5.4"
+pyarrow = "26.0.0"                  # full cp315 manylinux wheel set verified Nov 4, 2026
+
+[tools]
+pyperformance = "TBD"
+asv = "TBD"
+labeille = "TBD"                    # commit
+laruche = "TBD"                     # registry commit
+
+[cohort]
+source = "https://hugovk.dev/top-pypi-packages/"
+snapshot_date = "TBD"
+size = 25                           # expansion to 50 or 100 only after the pilot gate
+
+[hosts]
+x86_64 = "c7i.metal-24xl"
+aarch64 = "c7g.metal"               # only after the pilot gate
+compat = "c7i.4xlarge spot"
+
+# CHANGES
+# (date, field, old -> new, reason)
