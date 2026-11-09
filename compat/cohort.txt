@@ -1,3 +1,34 @@
 # Compatibility cohort. Snapshot date and source in pins.toml [cohort].
-# Format: rank  package  status  reason-if-excluded
-0  pandas  included  # own test suite at the pinned main commit
+# PROPOSED against the Top PyPI Packages snapshot of 2026-11-01 (last_update 06:41 UTC);
+# pins.toml [cohort].snapshot_date stays TBD until Fangchen confirms this snapshot.
+# laruche registry at 01d8860a (2026-07-13); its 3.15 skip notes predate the cp315 wheels
+# that numpy, pydantic and pydantic-core now publish, so "registry skip" is re-checked, not trusted.
+# No backfilling: excluded packages stay in the denominator with a reason.
+#
+# Format: rank  package  status  # registry notes
+0   pandas              included   # own test suite at the pinned main commit
+1   boto3               excluded   # registry skip=true; re-check reason before excluding for good
+2   packaging           included   # pytest, pure
+3   typing-extensions   included   # pytest (single test file), pure
+4   certifi             included   # pytest, pure
+5   idna                included   # pytest, pure
+6   urllib3             included   # pytest, pure, -p no:xdist
+7   charset-normalizer  included   # pytest, optional C extension
+8   requests            included   # pytest, pure
+9   cryptography        included   # pytest, Rust extension
+10  cffi                included   # pytest, C extension
+11  pluggy              included   # pytest, pure
+12  pyyaml              included   # pytest, C extension
+13  pycparser           included   # unittest discover, pure: no --junitxml; needs its own per-test capture
+14  pygments            included   # pytest, pure
+15  python-dateutil     included   # pytest, pure
+16  six                 included   # pytest, pure
+17  setuptools          included   # pytest, pure, -k "not integration"
+18  pydantic            included   # registry skip_versions 3.15 (stale: pydantic-core ships cp315); pytest, pure
+19  pydantic-core       excluded   # registry skip=true and skip_versions 3.15, no test_command; re-check
+20  click               included   # pytest, pure
+21  numpy               included   # registry skip_versions 3.15 (stale: 2.5.4 ships cp315); pytest --pyargs numpy
+22  botocore            included   # pytest, pure
+23  anyio               included   # pytest, pure
+24  annotated-types     included   # pytest, pure
+25  pytest              included   # pytest testing/, pure

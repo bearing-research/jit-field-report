@@ -16,10 +16,11 @@ Instructions for a coding agent working in this repo. Read `README.md` first.
 - [ ] Build CPython with `scripts/build_cpython.sh`; record the commit in `pins.toml`. Also build the pystats variant (`VARIANT=pystats`).
 - [ ] Pick the pandas main commit with Fangchen; build and install it into the JIT build with NumPy 2.5.4 and pyarrow 26.0.0 wheels and numexpr 2.14.2 built from sdist; record the SHA. Confirm `pandas.core.computation.expressions.USE_NUMEXPR` is True.
 - [ ] Run `scripts/check_jit.py` with `PYTHON_JIT=0` and `1`; confirm `jit_enabled` flips.
-- [ ] Wire pandas asv to the build with an `existing:` environment. Confirm `PYTHON_JIT` reaches benchmark subprocesses by logging `check_jit.jit_state()` from inside one benchmark. If it does not, fall back to two builds from the same commit (`=yes` and `=no`).
+- [ ] Wire pandas asv to the build with an `existing:` environment, one `--machine` label per arm, and move result files into `results/<run>/asv/run-NN/` after each paired invocation (`benchmarks/README.md`). `PYTHON_JIT` passthrough was confirmed in the sandbox on Nov 8; log `check_jit.jit_state()` from inside one pandas benchmark on the study build as the formal check.
 - [ ] Re-check every name in `benchmarks/selected.txt` against the pinned pandas commit.
 - [ ] Time one paired run of the selected set; run three paired runs and report the spread per benchmark.
-- [ ] Write the converter from asv result JSON to the tidy CSV that `analysis/paired.py` reads.
+- [x] Write the converter from asv result JSON to the tidy CSV that `analysis/paired.py` reads (`analysis/asv_to_tidy.py`, Nov 8).
+- [x] labeille checks that need no build: `run --env PYTHON_JIT=0` is the off arm; per-test outcomes need `--junitxml` plus `compat/compare_junit.py` (Nov 8, `compat/README.md`).
 - [ ] Run the three pipelines in both modes (`python scripts/fetch_data.py` first); confirm identical output hashes across arms.
 - [ ] Confirm the pystats build reports trace and executor counts for one benchmark and one pipeline.
 - [ ] Write a pilot summary in `results/pilot/SUMMARY.md`: build details, asv wiring outcome, timings, spread, and anything that blocks the plan.
