@@ -1,6 +1,8 @@
 # Pre-committed pandas asv benchmark selection (DRAFT, not frozen).
 # Drafted against pandas main 249a3e4845e574629d8f8aa6f1461fb47b02b02d (2026-11-04).
-# Re-check every name against the pinned commit in pins.toml before freezing.
+# Re-checked 2026-11-08 against main c29e741d9cb62193fc0569dacf29c6e62e63f847 (HEAD that day,
+# "TST: fix main CI after iterrows deprecation (#71967)"): all 55 module.Class.method names resolve
+# (static AST check of asv_bench/benchmarks). Re-check once more against the commit actually pinned.
 #
 # Format:  asv.benchmark.name    # prior | reason
 # prior = expected share of time in Python-level pandas code, written BEFORE any run:
